@@ -6,4 +6,5 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 t/00load.t
 t/lite_app.t
-META.yml                                 Module meta-data (added by MakeMaker)
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)
