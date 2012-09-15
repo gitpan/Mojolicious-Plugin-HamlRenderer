@@ -1,4 +1,5 @@
 package Mojolicious::Plugin::HamlRenderer;
+our $VERSION = '2.000000';
 
 use strict;
 use warnings;
@@ -6,9 +7,6 @@ use warnings;
 use base 'Mojolicious::Plugin';
 
 use MojoX::Renderer::Haml;
-
-our $VERSION = '1.1';
-
 
 sub register {
     my ($self, $app, $args) = @_;
@@ -29,27 +27,18 @@ Mojolicious::Plugin::HamlRenderer - Load HAML renderer
 
 =head2 SYNOPSIS
 
-# lite app
-plugin 'haml_renderer';
-# or normal app
-$self->plugin 'haml_renderer';
+    # lite app
+    plugin 'haml_renderer';
+
+    # or normal app
+    $self->plugin('haml_renderer');
 
 =head2 DESCRIPTION
 
 Simple plugin to load HAML renderer into your Mojolicious app.
 
-=head1 AUTHOR
+=head2 SEE ALSO
 
-Viacheslav Tykhanovskyi, C<viacheslav.t@gmail.com>.
-Marcus Ramberg, C<mramberg@cpan.org>.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2008-2009, Viacheslav Tykhanovskyi.
-
-This program is free software, you can redistribute it and/or modify it under
-the same terms as Perl 5.10.
+L<MojoX::Renderer::Haml>, L<Text::Haml>.
 
 =cut
-
-

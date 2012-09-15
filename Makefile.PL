@@ -11,7 +11,10 @@ my $mm = $ExtUtils::MakeMaker::VERSION;
 
 WriteMakefile(
     NAME         => 'Mojolicious::Plugin::HamlRenderer',
+
+    # NOTE: Please update the $VERSION in both modules!
     VERSION_FROM => 'lib/Mojolicious/Plugin/HamlRenderer.pm',
+
     ABSTRACT     => 'Haml renderer for Mojolicious',
     AUTHOR       => 'Viacheslav Tykhanovskyi <vti@cpan.org>',
 
@@ -24,7 +27,7 @@ WriteMakefile(
                 resources => {
                     license => 'http://dev.perl.org/licenses/',
                     repository =>
-                      'http://github.com/marcusramberg/mojox-renderer-haml/tree/master'
+                      'http://github.com/vti/mojox-renderer-haml/tree/master'
                 },
                 no_index => {directory => [qw/t/]}
             },

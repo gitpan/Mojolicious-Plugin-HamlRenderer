@@ -1,4 +1,5 @@
 package MojoX::Renderer::Haml;
+our $VERSION = '2.000000';
 
 use warnings;
 use strict;
@@ -8,7 +9,6 @@ use base 'Mojo::Base';
 use Mojo::ByteStream 'b';
 use Mojo::Exception;
 use Text::Haml;
-
 
 __PACKAGE__->attr(haml_args=>sub { return {}; });
 
@@ -33,6 +33,7 @@ sub _render {
     unless ($path = $c->stash->{'template_path'}) {
         $path = $r->template_path($options);
     }
+    return unless defined $path;
 
     my $list = join ', ', sort keys %{$c->stash};
     my $cache = b("$path($list)")->md5_sum->to_string;
@@ -49,6 +50,7 @@ sub _render {
     if ( $c->app->mode ne 'development' &&  $haml && $haml->compiled) {
         $haml->helpers_arg($c);
 
+        $c->app->log->debug("Rendering cached $t.");
         $$output = $haml->interpret(%args);
     }
 
@@ -61,44 +63,39 @@ sub _render {
 
         # Try template
         if (-r $path) {
+            $c->app->log->debug("Rendering template '$t'.");
             $$output = $haml->render_file($path, %args);
         }
 
         # Try DATA section
-        elsif (my $d = $r->get_data_template($c, $t)) {
+        # as of Mojolicious 3.34 get_data_template discards $t
+        elsif (my $d = $r->get_data_template($options, $t)) {
+            $c->app->log->debug("Rendering template '$t' from DATA section.");
             $$output = $haml->render($d, %args);
         }
 
         # No template
         else {
-            $c->app->log->error(qq/Template "$t" missing or not readable./);
-            $c->render_not_found;
+            $c->app->log->debug(qq/Template "$t" missing or not readable./);
             return;
         }
     }
 
     unless (defined $$output) {
         $$output = '';
-
-        my $e = Mojo::Exception->new($haml->error);
-
-        $c->app->log->error( qq/Template error in "$t": / . $haml->error);
-
-        $c->render_exception($e);
-
-        return 0;
+        die(qq/Template error in "$t": / . $haml->error);
     }
 
     $r->{_haml_cache}->{$cache} ||= $haml;
 
-    return 1;
+    return ref $$output ? die($$output) : 1;
 }
 
 1;
 
 =head2 NAME
 
-MojoX::Renderer::Haml - Mojolicious renderer for HAML templates. 
+MojoX::Renderer::Haml - Mojolicious renderer for HAML templates.
 
 =head2 SYNOPSIS
 
@@ -112,13 +109,20 @@ MojoX::Renderer::Haml - Mojolicious renderer for HAML templates.
 This module is a renderer for L<HTML::Haml> templates. normally, you 
 just want to use L<Mojolicious::Plugin::HamlRenderer>.
 
+=head1 CREDITS
+
+Marcus Ramberg, C<mramberg@cpan.org>
+Randy Stauner, C<rwstauner@cpan.org>
+
 =head1 AUTHOR
 
 Viacheslav Tykhanovskyi, C<viacheslav.t@gmail.com>.
 
+Currently maintained by Breno G. de Oliveira, C<garu@cpan.org>.
+
 =head1 COPYRIGHT
 
-Copyright (C) 2008-2009, Viacheslav Tykhanovskyi.
+Copyright (C) 2008-2012, Viacheslav Tykhanovskyi.
 
 This program is free software, you can redistribute it and/or modify it under
 the same terms as Perl 5.10.
