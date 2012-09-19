@@ -23,4 +23,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/vti/mojox-renderer-haml/tree/master
-version: 2.000000
+version: 2.000001
